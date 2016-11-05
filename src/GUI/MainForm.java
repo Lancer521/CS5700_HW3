@@ -1,13 +1,20 @@
 package GUI;
 
+import Commands.*;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import FlyWeight.*;
 
 /**
  * Created by Ty on 11/1/2016 at 11:59 PM.
  */
-public class MainForm implements ActionListener {
+public class MainForm implements ActionListener, MouseListener {
     private JFrame frame;
     private JButton diagonalRightLine;
     private JButton emptyCircle;
@@ -15,17 +22,23 @@ public class MainForm implements ActionListener {
     private JButton verticalLine;
     private JButton horizontalLine;
     private JButton filledCircle;
-    private JPanel panelMain;
+    private JPanel contentPane;
     private JPanel drawingPanel;
     private JPanel buttonPanel;
     private JButton save;
     private JButton load;
     private JButton undo;
+    private JButton selectionMode;
 
+    private Graphics graphics;
+    private DrawingPad drawingPad;
+
+    private int imageKey = -1;
+    private boolean buttonClicked;
 
     public MainForm() {
         frame = new JFrame();
-        frame.setContentPane(panelMain);
+        frame.setContentPane(contentPane);
         frame.setSize(800, 500);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -39,6 +52,10 @@ public class MainForm implements ActionListener {
         menu.add(newMenuItem);
         menuBar.add(menu);
         frame.setJMenuBar(menuBar);
+
+        frame.addMouseListener(this);
+
+        drawingPad = new DrawingPad(drawingPanel);
 
         setActionListeners();
 
@@ -60,29 +77,77 @@ public class MainForm implements ActionListener {
         save.addActionListener(this);
         load.addActionListener(this);
         undo.addActionListener(this);
+        selectionMode.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object eventObject = e.getSource();
+
         if (eventObject == save) {
-
+            buttonClicked = true;
+            //TODO: save
         } else if (eventObject == load) {
-
+            buttonClicked = true;
+            //TODO: load
         } else if (eventObject == undo) {
-
+            buttonClicked = true;
+            //TODO: undo
+        } else if (eventObject == selectionMode) {
+            buttonClicked = true;
+            imageKey = -1;
         } else if (eventObject == emptyCircle) {
-            // TODO: Change pointer icon
+            buttonClicked = true;
+            imageKey = FlyWeightFactory.EMPTY_CIRCLE;
         } else if (eventObject == filledCircle) {
-            // TODO: Change pointer icon
+            buttonClicked = true;
+            imageKey = FlyWeightFactory.FILLED_CIRCLE;
         } else if (eventObject == verticalLine) {
-            // TODO: Change pointer icon
+            buttonClicked = true;
+            imageKey = FlyWeightFactory.VERT_LINE;
         } else if (eventObject == horizontalLine) {
-            // TODO: Change pointer icon
+            buttonClicked = true;
+            imageKey = FlyWeightFactory.HORIZ_LINE;
         } else if (eventObject == diagonalLeftLine) {
-            // TODO: Change pointer icon
+            buttonClicked = true;
+            imageKey = FlyWeightFactory.DIAG_LEFT;
         } else if (eventObject == diagonalRightLine) {
-            // TODO: Change pointer icon
+            buttonClicked = true;
+            imageKey = FlyWeightFactory.DIAG_RIGHT;
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        Command command;
+        if (imageKey == -1) {
+            command = new SelectImageCommand(drawingPad);
+        } else {
+            command = new AddToCanvasCommand(drawingPad, imageKey);
+        }
+        Invoker invoker = new Invoker(command, e.getX(), e.getY());
+        invoker.invoke();
+        drawingPanel.repaint();
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //NO-OP
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //NO-OP
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //NO-OP
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //NO-OP
     }
 }
