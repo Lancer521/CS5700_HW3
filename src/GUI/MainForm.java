@@ -57,6 +57,12 @@ public class MainForm implements ActionListener, MouseListener {
 
         drawingPad = new DrawingPad(drawingPanel);
 
+        /*ImageIcon image = new ImageIcon("src/images/USU.png");
+        JLabel test = new JLabel(image, JLabel.CENTER);
+        test.setSize(20, 20);
+        test.setLocation(100, 100);
+        drawingPanel.add(test);*/
+
         setActionListeners();
 
 
@@ -64,7 +70,7 @@ public class MainForm implements ActionListener, MouseListener {
     }
 
     public static void main(String[] args) {
-        new MainForm();
+        MainForm form = new MainForm();
     }
 
     private void setActionListeners() {
@@ -98,22 +104,22 @@ public class MainForm implements ActionListener, MouseListener {
             imageKey = -1;
         } else if (eventObject == emptyCircle) {
             buttonClicked = true;
-            imageKey = FlyWeightFactory.EMPTY_CIRCLE;
+            imageKey = LogoIntrinsicState.USU;
         } else if (eventObject == filledCircle) {
             buttonClicked = true;
-            imageKey = FlyWeightFactory.FILLED_CIRCLE;
+            imageKey = LogoIntrinsicState.UTAH;
         } else if (eventObject == verticalLine) {
             buttonClicked = true;
-            imageKey = FlyWeightFactory.VERT_LINE;
+            imageKey = LogoIntrinsicState.WEBER;
         } else if (eventObject == horizontalLine) {
             buttonClicked = true;
-            imageKey = FlyWeightFactory.HORIZ_LINE;
+            imageKey = LogoIntrinsicState.UVU;
         } else if (eventObject == diagonalLeftLine) {
             buttonClicked = true;
-            imageKey = FlyWeightFactory.DIAG_LEFT;
+            imageKey = LogoIntrinsicState.SUU;
         } else if (eventObject == diagonalRightLine) {
             buttonClicked = true;
-            imageKey = FlyWeightFactory.DIAG_RIGHT;
+            imageKey = LogoIntrinsicState.BYU;
         }
     }
 
@@ -126,7 +132,7 @@ public class MainForm implements ActionListener, MouseListener {
         } else {
             command = new AddToCanvasCommand(drawingPad, imageKey);
         }
-        Invoker invoker = new Invoker(command, e.getX(), e.getY());
+        Invoker invoker = new Invoker(command, e.getX()-buttonPanel.getWidth()-20, e.getY()-50);
         invoker.invoke();
         drawingPanel.repaint();
     }
