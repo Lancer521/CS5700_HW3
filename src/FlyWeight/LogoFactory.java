@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * Created by Ty on 11/2/2016 at 7:27 PM.
  */
-public class FlyWeightFactory {
+public class LogoFactory {
 
     private static final HashMap<Integer, LogoIntrinsicState> objectsByType = new HashMap<>();
 

@@ -7,14 +7,12 @@ import java.awt.*;
  */
 public class LogoExtrinsicState {
 
-    public LogoExtrinsicState(int x, int y, int width, int height){
-        location = new Point(x,y);
-        dimension = new Dimension(width, height);
+    public LogoExtrinsicState(int x, int y){
+        location = new Point(x-50,y-50);
+        dimension = new Dimension(100, 100);
     }
 
     public Point location;
 
     public Dimension dimension;
-
-    public boolean isSelected;
 }

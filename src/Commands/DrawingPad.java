@@ -1,6 +1,6 @@
 package Commands;
 
-import FlyWeight.FlyWeightFactory;
+import FlyWeight.LogoFactory;
 import FlyWeight.LogoBothStates;
 import FlyWeight.LogoExtrinsicState;
 
@@ -13,8 +13,6 @@ import java.awt.event.MouseEvent;
 public class DrawingPad extends DrawableSurface {
 
     private JPanel panel;
-    private final int STANDARD_WIDTH = 100;
-    private final int STANDARD_HEIGHT = 100;
 
     public DrawingPad(JPanel panel) {
         this.panel = panel;
@@ -22,14 +20,10 @@ public class DrawingPad extends DrawableSurface {
     }
 
     @Override
-    public void draw(int xVal, int yVal, int imageKey) {
-        LogoExtrinsicState logoExtrinsicState = new LogoExtrinsicState(xVal, yVal, STANDARD_WIDTH, STANDARD_HEIGHT);
-        LogoBothStates state = FlyWeightFactory.getImage(imageKey, logoExtrinsicState);
-        JLabel image = state.getImageLabel();
-        if (image == null) return;
-        image.addMouseListener(this);
-        panel.add(image);
-
+    public void add(int xVal, int yVal, int imageKey) {
+        LogoExtrinsicState logoExtrinsicState = new LogoExtrinsicState(xVal, yVal);
+        LogoBothStates logo = LogoFactory.getImage(imageKey, logoExtrinsicState);
+        logo.draw(panel);
     }
 
     @Override
@@ -39,35 +33,5 @@ public class DrawingPad extends DrawableSurface {
 
     @Override
     public void delete() {
-
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        Object source = e.getSource();
-        if(source instanceof JLabel){
-            JLabel label = (JLabel) source;
-//            label.setSelected(true);
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }

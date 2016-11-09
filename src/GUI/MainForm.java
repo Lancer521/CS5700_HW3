@@ -4,37 +4,36 @@ import Commands.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
 
-import FlyWeight.*;
+import Utils.ActionConstants;
 
 /**
  * Created by Ty on 11/1/2016 at 11:59 PM.
  */
 public class MainForm implements ActionListener, MouseListener {
     private JFrame frame;
-    private JButton diagonalRightLine;
-    private JButton emptyCircle;
-    private JButton diagonalLeftLine;
-    private JButton verticalLine;
-    private JButton horizontalLine;
-    private JButton filledCircle;
+    private JButton byuLogoButton;
+    private JButton usuLogoButton;
+    private JButton suuLogoButton;
+    private JButton weberLogoButton;
+    private JButton uvuLogoButton;
+    private JButton utahLogoButton;
     private JPanel contentPane;
     private JPanel drawingPanel;
     private JPanel buttonPanel;
-    private JButton save;
-    private JButton load;
-    private JButton undo;
-    private JButton selectionMode;
+    private JButton saveButton;
+    private JButton loadButton;
+    private JButton undoButton;
+    private JButton selectButton;
+    private JButton deleteButton;
 
-    private Graphics graphics;
     private DrawingPad drawingPad;
+    private List<Command> commandList;
 
-    private int imageKey = -1;
-    private boolean buttonClicked;
+    private int whichButton = -1;
 
     public MainForm() {
         frame = new JFrame();
@@ -52,16 +51,10 @@ public class MainForm implements ActionListener, MouseListener {
         menu.add(newMenuItem);
         menuBar.add(menu);
         frame.setJMenuBar(menuBar);
-
         frame.addMouseListener(this);
 
         drawingPad = new DrawingPad(drawingPanel);
-
-        /*ImageIcon image = new ImageIcon("src/images/USU.png");
-        JLabel test = new JLabel(image, JLabel.CENTER);
-        test.setSize(20, 20);
-        test.setLocation(100, 100);
-        drawingPanel.add(test);*/
+        commandList = new ArrayList<>();
 
         setActionListeners();
 
@@ -74,66 +67,83 @@ public class MainForm implements ActionListener, MouseListener {
     }
 
     private void setActionListeners() {
-        diagonalRightLine.addActionListener(this);
-        emptyCircle.addActionListener(this);
-        diagonalLeftLine.addActionListener(this);
-        verticalLine.addActionListener(this);
-        horizontalLine.addActionListener(this);
-        filledCircle.addActionListener(this);
-        save.addActionListener(this);
-        load.addActionListener(this);
-        undo.addActionListener(this);
-        selectionMode.addActionListener(this);
+        byuLogoButton.addActionListener(this);
+        usuLogoButton.addActionListener(this);
+        suuLogoButton.addActionListener(this);
+        weberLogoButton.addActionListener(this);
+        uvuLogoButton.addActionListener(this);
+        utahLogoButton.addActionListener(this);
+        saveButton.addActionListener(this);
+        loadButton.addActionListener(this);
+        undoButton.addActionListener(this);
+        deleteButton.addActionListener(this);
+        selectButton.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object eventObject = e.getSource();
 
-        if (eventObject == save) {
-            buttonClicked = true;
-            //TODO: save
-        } else if (eventObject == load) {
-            buttonClicked = true;
-            //TODO: load
-        } else if (eventObject == undo) {
-            buttonClicked = true;
-            //TODO: undo
-        } else if (eventObject == selectionMode) {
-            buttonClicked = true;
-            imageKey = -1;
-        } else if (eventObject == emptyCircle) {
-            buttonClicked = true;
-            imageKey = LogoIntrinsicState.USU;
-        } else if (eventObject == filledCircle) {
-            buttonClicked = true;
-            imageKey = LogoIntrinsicState.UTAH;
-        } else if (eventObject == verticalLine) {
-            buttonClicked = true;
-            imageKey = LogoIntrinsicState.WEBER;
-        } else if (eventObject == horizontalLine) {
-            buttonClicked = true;
-            imageKey = LogoIntrinsicState.UVU;
-        } else if (eventObject == diagonalLeftLine) {
-            buttonClicked = true;
-            imageKey = LogoIntrinsicState.SUU;
-        } else if (eventObject == diagonalRightLine) {
-            buttonClicked = true;
-            imageKey = LogoIntrinsicState.BYU;
+        if (eventObject == saveButton) {
+            whichButton = ActionConstants.SAVE;
+        } else if (eventObject == loadButton) {
+            whichButton = ActionConstants.LOAD;
+        } else if (eventObject == deleteButton) {
+            Command command = new RemoveSelectedCommand(drawingPanel);
+            Invoker invoker = new Invoker(command, 0, 0);
+            invoker.invoke();
+            commandList.add(command);
+        } else if (eventObject == undoButton) {
+            whichButton = ActionConstants.UNDO;
+        } else if (eventObject == selectButton) {
+            whichButton = ActionConstants.SELECT;
+            SelectionManager.getInstance().setSelectionMode(true);
+        } else if (eventObject == usuLogoButton) {
+            whichButton = ActionConstants.USU;
+        } else if (eventObject == utahLogoButton) {
+            whichButton = ActionConstants.UTAH;
+        } else if (eventObject == weberLogoButton) {
+            whichButton = ActionConstants.WEBER;
+        } else if (eventObject == uvuLogoButton) {
+            whichButton = ActionConstants.UVU;
+        } else if (eventObject == suuLogoButton) {
+            whichButton = ActionConstants.SUU;
+        } else if (eventObject == byuLogoButton) {
+            whichButton = ActionConstants.BYU;
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        Command command;
-        if (imageKey == -1) {
-            command = new SelectImageCommand(drawingPad);
-        } else {
-            command = new AddToCanvasCommand(drawingPad, imageKey);
+        //Don't place labels if click occurs on buttonpanel
+        if (e.getX() < buttonPanel.getWidth() + 20) return;
+
+        Command command = null;
+        switch (whichButton) {
+            case ActionConstants.SAVE:
+                break;
+            case ActionConstants.LOAD:
+                break;
+            case ActionConstants.UNDO:
+//                command = new UndoCommand(commandList);
+                break;
+            case ActionConstants.SELECT:
+                command = new SelectImageCommand(SelectionManager.getInstance().getSelectedLogo());
+                break;
+            case ActionConstants.USU:
+            case ActionConstants.UTAH:
+            case ActionConstants.WEBER:
+            case ActionConstants.UVU:
+            case ActionConstants.SUU:
+            case ActionConstants.BYU:
+                command = new AddToCanvasCommand(drawingPad, whichButton);
+                break;
         }
-        Invoker invoker = new Invoker(command, e.getX()-buttonPanel.getWidth()-20, e.getY()-50);
+        if(command == null) return;
+        Invoker invoker = new Invoker(command, e.getX() - buttonPanel.getWidth() - 20, e.getY() - 50);
         invoker.invoke();
+//        commandList.add(command);
         drawingPanel.repaint();
     }
 

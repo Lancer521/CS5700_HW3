@@ -1,22 +1,17 @@
 package FlyWeight;
 
+import Utils.ActionConstants;
+
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by Ty on 11/7/2016 at 4:14 PM.
  */
-public class LogoIntrinsicState {
-
-    public static final int USU = 0;
-    public static final int UTAH = 1;
-    public static final int WEBER = 2;
-    public static final int UVU = 3;
-    public static final int SUU = 4;
-    public static final int BYU = 5;
+public class LogoIntrinsicState extends Logo {
 
     private int type;
     private ImageIcon image;
-//    public JLabel label;
 
     public LogoIntrinsicState(final int type) {
         this.type = type;
@@ -26,24 +21,25 @@ public class LogoIntrinsicState {
     private void retrieveImageLabel() {
         String filepath = getFilePath();
         if(filepath != null){
-            image = new ImageIcon(getFilePath());
-//            label = new JLabel(image, JLabel.CENTER);
+            ImageIcon unscaledImageIcon = new ImageIcon(getFilePath());
+            Image scaledImage = unscaledImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            image = new ImageIcon(scaledImage);
         }
     }
 
     private String getFilePath() {
         switch (type) {
-            case USU:
+            case ActionConstants.USU:
                 return "src/images/usu.png";
-            case UTAH:
+            case ActionConstants.UTAH:
                 return "src/images/utah.png";
-            case WEBER:
+            case ActionConstants.WEBER:
                 return "src/images/weber.png";
-            case UVU:
+            case ActionConstants.UVU:
                 return "src/images/uvu.png";
-            case SUU:
+            case ActionConstants.SUU:
                 return "src/images/suu.png";
-            case BYU:
+            case ActionConstants.BYU:
                 return "src/images/byu.png";
             default:
                 System.out.println("INVALID IMAGE TYPE - Could not create image");
@@ -53,5 +49,15 @@ public class LogoIntrinsicState {
 
     public ImageIcon getImage(){
         return image;
+    }
+
+    @Override
+    public void draw(JPanel panel) {
+        System.out.println("Cannot add logo without extrinsic state");
+    }
+
+    @Override
+    public void erase(JPanel panel) {
+        System.out.println("Cannot erase logo without extrinsic state");
     }
 }
